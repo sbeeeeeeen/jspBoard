@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="posts">
+	<select id="getPostsInfo" parameterType="Integer" resultType="PostsVo">
+		SELECT *
+		FROM posts
+		WHERE posts_id=#{posts_id}
+	</select>
+	
+	<select id="getPostsCommentInfo" parameterType="Integer" resultType="commentVo">
+		SELECT *
+		FROM postscomment
+		WHERE posts_id=#{posts_id}
+		ORDER BY com_date DESC
+	</select>
+	
+	<insert id="insertPostsComment" parameterType="commentVo">
+		INSERT INTO postscomment(posts_id, std_id, com_id, com_content, com_date, com_status)
+		VALUES(#{posts_id}, #{std_id}, seq_com.nextval, #{com_content}, sysdate, #{com_status})
+	</insert>
+	
+	<update id="deletePostsComment" parameterType="Integer">
+		UPDATE postscomment
+		SET com_status = 'N'
+		WHERE com_id=#{com_id}
+	</update>
+	
+	<update id="deletePosts" parameterType="Integer">
+		UPDATE posts
+		SET posts_status = 'N'
+		WHERE posts_id=#{posts_id}
+	</update>
+	
+	<insert id="insertPosts" parameterType="PostsVo">
+		INSERT INTO posts(
+						  posts_id
+						  , board_id
+						  , std_id
+						  , posts_title
+						  , posts_content
+						  , posts_date
+						  , posts_status
+						  , posts_pno
+						  , posts_gno
+						  )
+					VALUES(
+					       #{posts_id}
+					       , #{board_id}
+					       , #{std_id}
+					       , #{posts_title}
+					       , #{posts_content}
+					       , sysdate
+					       , 'Y'
+							<choose>
+								<when test="posts_pno == 0">
+				        			,null
+				    			</when>
+					    		<otherwise>
+									,#{posts_pno}
+					    		</otherwise>
+							</choose>
+							,#{posts_gno})
+	</insert>
+	
+	<update id="updatePosts" parameterType="PostsVo">
+		UPDATE posts
+		SET posts_title=#{posts_title}, posts_content=#{posts_content}, posts_date=sysdate
+		WHERE posts_id=#{posts_id}
+	</update>
+	
+	<select id="getPostsNewId" resultType="Integer">
+		SELECT max(posts_id)+1
+		FROM posts
+	</select>
+</mapper>

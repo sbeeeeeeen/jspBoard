@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+  <select id="getStudent" parameterType="map" resultType="Integer">
+  	SELECT count(*) 
+  	FROM student 
+  	WHERE std_id=#{std_id} AND pass=#{pass}
+  </select>
+  
+  <select id="getBoardList" resultType="boardVo">
+  	SELECT *
+  	FROM board
+  </select>
+  
+  <insert id="insertBoard" parameterType="map">
+  	INSERT INTO board(board_id, board_title, board_status) 
+  	VALUES(seq_board.nextval, #{board_title}, #{board_status})
+  </insert>
+  
+  <update id="updateBoard" parameterType="map">
+  	UPDATE board 
+  	SET board_title=#{board_title}, board_status=#{board_status} 
+  	WHERE board_id=#{board_id}
+  </update>
+  
+  <select id="getPostsList" resultType="postsVo" parameterType="map">
+	SELECT b.posts_id, b.board_id, b.std_id, lpad('　└', (lev-1)*4, '　')||posts_title as posts_title,
+	       b.posts_content, b.posts_date, b.posts_status, b.posts_pno, b.posts_gno
+	FROM( SELECT rownum rn, a.*
+	      FROM (SELECT p.*, level lev
+	            FROM posts p
+	            WHERE board_id=#{board_id}
+	            START WITH posts_pno is null
+	            CONNECT BY posts_pno = prior posts_id
+	            ORDER SIBLINGS BY posts_gno desc) a) b
+	WHERE rn BETWEEN (#{page}-1)*#{pageSize}+1 AND #{page}*#{pageSize}
+  </select>
+  
+  <select id="getPostsCnt" resultType="Integer" parameterType="Integer">
+  	SELECT count(*)
+  	FROM posts
+  	WHERE board_id = #{board_id}
+  </select>
+</mapper>
