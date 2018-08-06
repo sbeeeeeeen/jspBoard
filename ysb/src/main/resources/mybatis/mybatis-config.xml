@@ -3,27 +3,28 @@
   PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-  <typeAliases>
-  	<typeAlias type="ysb.model.StudentVo" alias="studentVo"/>
-  	<typeAlias type="ysb.model.PostsCommentVo" alias="commentVo"/>
-  	<typeAlias type="ysb.model.FileAttachmentVo" alias="fileVo"/>
-  	<typeAlias type="ysb.model.BoardVo" alias="boardVo"/>
-  	<typeAlias type="ysb.model.PostsVo" alias="postsVo"/>
-  </typeAliases>
-  <environments default="development">
-    <environment id="development">
-      <transactionManager type="JDBC"/>
-      <dataSource type="POOLED">
-        <property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
-        <property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
-        <property name="username" value="pc16"/>
-        <property name="password" value="java"/>
-      </dataSource>
-    </environment>
-  </environments>
-  <mappers>
-  	<mapper resource="mybatis/mapper/posts.xml"/>
-    <mapper resource="mybatis/mapper/board.xml"/>
-    <mapper resource="mybatis/mapper/file.xml"/>
-  </mappers>
+	<properties resource="mybatis/db.properties"></properties>
+	<typeAliases>
+		<typeAlias type="ysb.model.StudentVo" alias="studentVo" />
+		<typeAlias type="ysb.model.PostsCommentVo" alias="commentVo" />
+		<typeAlias type="ysb.model.FileAttachmentVo" alias="fileVo" />
+		<typeAlias type="ysb.model.BoardVo" alias="boardVo" />
+		<typeAlias type="ysb.model.PostsVo" alias="postsVo" />
+	</typeAliases>
+		<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="${jdbc.driver}" />
+				<property name="url" value="${jdbc.url}" />
+				<property name="username" value="${jdbc.username}" />
+				<property name="password" value="${jdbc.password}" />
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		<mapper resource="mybatis/mapper/posts.xml" />
+		<mapper resource="mybatis/mapper/board.xml" />
+		<mapper resource="mybatis/mapper/file.xml" />
+	</mappers>
 </configuration>
